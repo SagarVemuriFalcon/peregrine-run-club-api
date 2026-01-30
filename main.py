@@ -111,7 +111,7 @@ LOGO_CHALLENGE = {
 def generate_activity(athlete_id: str, athlete_name: str, date: datetime, activity_type: str, idx: int) -> dict:
     """Generate a synthetic activity"""
     profile = ACTIVITY_PROFILES[activity_type]
-    
+    athlete = next((a for a in ATHLETES if a["athlete_id"] == athlete_id), {})
     # Seed for reproducibility
     seed_str = f"{athlete_id}_{date.isoformat()}_{activity_type}_{idx}"
     seed = int(hashlib.md5(seed_str.encode()).hexdigest(), 16) % (2**32)
@@ -149,7 +149,8 @@ def generate_activity(athlete_id: str, athlete_name: str, date: datetime, activi
         "total_elevation_gain_ft": elevation_gain,
         "calories": round(distance_miles * random.uniform(80, 120)),
         "is_logo_challenge": False,
-        "summary_polyline": None
+        "summary_polyline": None,
+        "office": athlete.get("office", "Unknown")
     }
 
 def generate_activities_for_athlete(athlete: dict, start_date: datetime, end_date: datetime) -> List[dict]:
